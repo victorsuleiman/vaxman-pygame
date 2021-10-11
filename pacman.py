@@ -1,7 +1,19 @@
+#original game:
 #Pacman in Python with PyGame
 #https://github.com/hbokmann/Pacman
+
+#This game will be modified to Vax-man, which will have the following rules:
+# Vax-Man can kill a ghost if he comes into contact with it (vaccinates it).
+# Contact with a ghost does not kill Vax-Man.
+# Each ghost that has not yet been hit multiplies itself every 30 seconds (the infection grows).
+# The goal of the game is to collect all the dots before the number of ghosts grows to 32 times the original number.
+
+# Refactoring points:
+# Ghost objects need to be destroyed when colliding with pacman.
+# Ghosts need to duplicate every 30 seconds.
+# Game over (Lose) condition needs to be changed from sprite collision to number of ghosts.
   
-import pygame._view
+import pygame
   
 black = (0,0,0)
 white = (255,255,255)
@@ -11,7 +23,7 @@ red = (255,0,0)
 purple = (255,0,255)
 yellow   = ( 255, 255,   0)
 
-Trollicon=pygame.image.load('images/Trollman.png')
+Trollicon=pygame.image.load('images/pacman.png')
 pygame.display.set_icon(Trollicon)
 
 #Add music
@@ -398,7 +410,7 @@ def startGame():
 
 
   # Create the player paddle object
-  Pacman = Player( w, p_h, "images/Trollman.png" )
+  Pacman = Player( w, p_h, "images/pacman.png" )
   all_sprites_list.add(Pacman)
   pacman_collide.add(Pacman)
    
