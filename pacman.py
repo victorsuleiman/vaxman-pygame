@@ -9,7 +9,7 @@
 # The goal of the game is to collect all the dots before the number of ghosts grows to 32 times the original number.
 
 # Refactoring points:
-# Ghost objects need to be destroyed when colliding with pacman.
+# Ghost objects need to be destroyed when colliding with pacman. -> DONE!
 # Ghosts need to duplicate every 30 seconds.
 # Game over (Lose) condition needs to be changed from sprite collision to number of ghosts.
   
@@ -527,7 +527,6 @@ def startGame():
    
       # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
       screen.fill(black)
-        
       wall_list.draw(screen)
       gate.draw(screen)
       all_sprites_list.draw(screen)
@@ -538,11 +537,13 @@ def startGame():
 
       if score == bll:
         doNext("Congratulations, you won!",145,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
+      
+      # monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, False)
 
-      monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, False)
+      # if monsta_hit_list:
+      #   doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
 
-      if monsta_hit_list:
-        doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
+      monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, True)
 
       # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
       
@@ -586,6 +587,7 @@ def doNext(message,left,all_sprites_list,block_list,monsta_list,pacman_collide,w
       pygame.display.flip()
 
       clock.tick(10)
+
 
 startGame()
 
