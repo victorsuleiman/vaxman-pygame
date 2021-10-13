@@ -581,6 +581,9 @@ def startGame():
       text=font.render("Score: "+str(score)+"/"+str(bll), True, red)
       screen.blit(text, [10, 10])
 
+      text=font.render(f"Ghosts: {len(monsta_list)}", True, yellow)
+      screen.blit(text, [450, 10])
+
       if score == bll:
         doNext("Congratulations, you won!",145,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
       
