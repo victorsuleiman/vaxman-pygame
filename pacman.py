@@ -14,7 +14,6 @@
 # Game over (Lose) condition needs to be changed from sprite collision to number of ghosts.
   
 import pygame
-import time
 
 from pygame.constants import MOUSEMOTION
 
@@ -31,9 +30,9 @@ Trollicon=pygame.image.load('images/pacman.png')
 pygame.display.set_icon(Trollicon)
 
 #Add music
-# pygame.mixer.init()
-# pygame.mixer.music.load('pacman.mp3')
-# pygame.mixer.music.play(-1, 0.0)
+pygame.mixer.init()
+pygame.mixer.music.load('pacman.mp3')
+pygame.mixer.music.play(-1, 0.0)
 
 # This class represents the bar at the bottom that the player controls
 class Wall(pygame.sprite.Sprite):
@@ -412,39 +411,24 @@ def startGame():
 
   gate = setupGate(all_sprites_list)
 
-
-  #turns and steps need to be a class attribute now.
-  p_turn = 0
-  p_steps = 0
-
-  b_turn = 0
-  b_steps = 0
-
-  i_turn = 0
-  i_steps = 0
-
-  c_turn = 0
-  c_steps = 0
-
-
   # Create the player paddle object
   Pacman = Player( w, p_h, "images/pacman.png" , "Vax-man" )
   all_sprites_list.add(Pacman)
   pacman_collide.add(Pacman)
    
-  Blinky=Ghost( w, b_h, "images/Blinky.png" , "Blinky" )
+  Blinky=Ghost( w, b_h, "images/corona.png" , "Blinky" )
   monsta_list.add(Blinky)
   all_sprites_list.add(Blinky)
 
-  Pinky=Ghost( w, m_h, "images/Pinky.png" , "Pinky" )
+  Pinky=Ghost( w, m_h, "images/corona.png" , "Pinky" )
   monsta_list.add(Pinky)
   all_sprites_list.add(Pinky)
    
-  Inky=Ghost( i_w, m_h, "images/Inky.png" , "Inky" )
+  Inky=Ghost( i_w, m_h, "images/corona.png" , "Inky" )
   monsta_list.add(Inky)
   all_sprites_list.add(Inky)
    
-  Clyde=Ghost( c_w, m_h, "images/Clyde.png" , "Clyde" )
+  Clyde=Ghost( c_w, m_h, "images/corona.png" , "Clyde" )
   monsta_list.add(Clyde)
   all_sprites_list.add(Clyde)
 
@@ -510,30 +494,6 @@ def startGame():
       # ALL GAME LOGIC SHOULD GO BELOW THIS COMMENT
       Pacman.update(wall_list,gate)
 
-      # returned = Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
-      # p_turn = returned[0]
-      # p_steps = returned[1]
-      # Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
-      # Pinky.update(wall_list,False)
-
-      # returned = Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
-      # b_turn = returned[0]
-      # b_steps = returned[1]
-      # Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
-      # Blinky.update(wall_list,False)
-
-      # returned = Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
-      # i_turn = returned[0]
-      # i_steps = returned[1]
-      # Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
-      # Inky.update(wall_list,False)
-
-      # returned = Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
-      # c_turn = returned[0]
-      # c_steps = returned[1]
-      # Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
-      # Clyde.update(wall_list,False)
-
       for ghost in monsta_list:
         directionList = list()
         ghostName = ""
@@ -581,17 +541,14 @@ def startGame():
       text=font.render("Score: "+str(score)+"/"+str(bll), True, red)
       screen.blit(text, [10, 10])
 
-      text=font.render(f"Ghosts: {len(monsta_list)}", True, yellow)
+      text=font.render(f"Viruses: {len(monsta_list)}", True, yellow)
       screen.blit(text, [450, 10])
 
       if score == bll:
         doNext("Congratulations, you won!",145,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
       
-      # monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, False)
+      # Pac-man vaccinates a ghost
       monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, True)
-
-      # if monsta_hit_list:
-      #   doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
 
       if (len(monsta_list) > 128):
         doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)      
@@ -607,16 +564,16 @@ def startGame():
         ghost.incrementTime(0.1)
         if (ghost.spawn_time > 30):
           ghost.spawn_time = 0
-          NewGhost = Ghost( w, m_h, "images/Pinky.png" , "Pinky" )
+          NewGhost = Ghost( w, m_h, "images/corona.png" , "Pinky" )
 
           if ghost.name == "Pinky":
-            NewGhost = Ghost( w, m_h, "images/Pinky.png" , "Pinky" )
+            NewGhost = Ghost( w, m_h, "images/corona.png" , "Pinky" )
           elif ghost.name == "Blinky":
-            NewGhost = Ghost( w, b_h, "images/Blinky.png" , "Blinky" )
+            NewGhost = Ghost( w, b_h, "images/corona.png" , "Blinky" )
           elif ghost.name == "Inky":
-            NewGhost = Ghost( i_w, m_h, "images/Inky.png" , "Inky" )
+            NewGhost = Ghost( i_w, m_h, "images/corona.png" , "Inky" )
           elif ghost.name == "Clyde":
-            NewGhost = Ghost( c_w, m_h, "images/Clyde.png" , "Clyde" )
+            NewGhost = Ghost( c_w, m_h, "images/corona.png" , "Clyde" )
 
           NewGhost.spawn_time = 0
           monsta_list.add(NewGhost)
