@@ -1,23 +1,8 @@
-#original game:
 #Pacman in Python with PyGame
 #https://github.com/hbokmann/Pacman
-
-#This game will be modified to Vax-man, which will have the following rules:
-# Vax-Man can kill a ghost if he comes into contact with it (vaccinates it).
-# Contact with a ghost does not kill Vax-Man.
-# Each ghost that has not yet been hit multiplies itself every 30 seconds (the infection grows).
-# The goal of the game is to collect all the dots before the number of ghosts grows to 32 times the original number.
-
-# Refactoring points:
-# Ghost objects need to be destroyed when colliding with pacman. -> DONE!
-# Ghosts need to duplicate every 30 seconds.
-# Game over (Lose) condition needs to be changed from sprite collision to number of ghosts.
   
 import pygame
-
-from pygame.constants import MOUSEMOTION
-
-
+  
 black = (0,0,0)
 white = (255,255,255)
 blue = (0,0,255)
@@ -26,7 +11,7 @@ red = (255,0,0)
 purple = (255,0,255)
 yellow   = ( 255, 255,   0)
 
-Trollicon=pygame.image.load('images/corona.png')
+Trollicon=pygame.image.load('images/Trollman.png')
 pygame.display.set_icon(Trollicon)
 
 #Add music
@@ -136,15 +121,13 @@ class Block(pygame.sprite.Sprite):
 
 # This class represents the bar at the bottom that the player controls
 class Player(pygame.sprite.Sprite):
-
-    name = ""
-
+  
     # Set speed vector
     change_x=0
     change_y=0
   
     # Constructor function
-    def __init__(self,x,y, filename,name):
+    def __init__(self,x,y, filename):
         # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
    
@@ -157,8 +140,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.left = x
         self.prev_x = x
         self.prev_y = y
-
-        self.name = name
 
     # Clear the speed of the player
     def prevdirection(self):
@@ -216,17 +197,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.left=old_x
             self.rect.top=old_y
 
-    
-
 #Inheritime Player klassist
 class Ghost(Player):
-    spawn_time = 0
-    turn = 0
-    steps = 0
-
-    def incrementTime(self,tick):
-      self.spawn_time += tick
-
     # Change the speed of the ghost
     def changespeed(self,list,ghost,turn,steps,l):
       try:
@@ -371,7 +343,7 @@ screen = pygame.display.set_mode([606, 606])
 
 
 # Set the title of the window
-pygame.display.set_caption('Vax-man')
+pygame.display.set_caption('Pacman')
 
 # Create a surface we can draw on
 background = pygame.Surface(screen.get_size())
@@ -411,24 +383,38 @@ def startGame():
 
   gate = setupGate(all_sprites_list)
 
+
+  p_turn = 0
+  p_steps = 0
+
+  b_turn = 0
+  b_steps = 0
+
+  i_turn = 0
+  i_steps = 0
+
+  c_turn = 0
+  c_steps = 0
+
+
   # Create the player paddle object
-  Pacman = Player( w, p_h, "images/pacman.png" , "Vax-man" )
+  Pacman = Player( w, p_h, "images/Trollman.png" )
   all_sprites_list.add(Pacman)
   pacman_collide.add(Pacman)
    
-  Blinky=Ghost( w, b_h, "images/corona.png" , "Blinky" )
+  Blinky=Ghost( w, b_h, "images/Blinky.png" )
   monsta_list.add(Blinky)
   all_sprites_list.add(Blinky)
 
-  Pinky=Ghost( w, m_h, "images/corona.png" , "Pinky" )
+  Pinky=Ghost( w, m_h, "images/Pinky.png" )
   monsta_list.add(Pinky)
   all_sprites_list.add(Pinky)
    
-  Inky=Ghost( i_w, m_h, "images/corona.png" , "Inky" )
+  Inky=Ghost( i_w, m_h, "images/Inky.png" )
   monsta_list.add(Inky)
   all_sprites_list.add(Inky)
    
-  Clyde=Ghost( c_w, m_h, "images/corona.png" , "Clyde" )
+  Clyde=Ghost( c_w, m_h, "images/Clyde.png" )
   monsta_list.add(Clyde)
   all_sprites_list.add(Clyde)
 
@@ -494,33 +480,29 @@ def startGame():
       # ALL GAME LOGIC SHOULD GO BELOW THIS COMMENT
       Pacman.update(wall_list,gate)
 
-      for ghost in monsta_list:
-        directionList = list()
-        ghostName = ""
-        directionLength = list()
+      returned = Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
+      p_turn = returned[0]
+      p_steps = returned[1]
+      Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
+      Pinky.update(wall_list,False)
 
-        if ghost.name == "Pinky":
-          directionList = Pinky_directions
-          ghostName = False
-          directionLength = pl
-        elif ghost.name == "Blinky":
-          directionList = Blinky_directions
-          ghostName = False
-          directionLength = bl
-        elif ghost.name == "Inky":
-          directionList = Inky_directions
-          ghostName = False
-          directionLength = il
-        elif ghost.name == "Clyde":
-          directionList = Clyde_directions
-          ghostName = "clyde"
-          directionLength = cl
-        
-        returned = ghost.changespeed(directionList,ghostName,ghost.turn,ghost.steps,directionLength)
-        ghost.turn = returned[0]
-        ghost.steps = returned[1]
-        ghost.changespeed(directionList,ghostName,ghost.turn,ghost.steps,directionLength)
-        ghost.update(wall_list,False)
+      returned = Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
+      b_turn = returned[0]
+      b_steps = returned[1]
+      Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
+      Blinky.update(wall_list,False)
+
+      returned = Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
+      i_turn = returned[0]
+      i_steps = returned[1]
+      Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
+      Inky.update(wall_list,False)
+
+      returned = Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
+      c_turn = returned[0]
+      c_steps = returned[1]
+      Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
+      Clyde.update(wall_list,False)
 
       # See if the Pacman block has collided with anything.
       blocks_hit_list = pygame.sprite.spritecollide(Pacman, block_list, True)
@@ -533,6 +515,7 @@ def startGame():
    
       # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
       screen.fill(black)
+        
       wall_list.draw(screen)
       gate.draw(screen)
       all_sprites_list.draw(screen)
@@ -541,44 +524,19 @@ def startGame():
       text=font.render("Score: "+str(score)+"/"+str(bll), True, red)
       screen.blit(text, [10, 10])
 
-      text=font.render(f"Viruses: {len(monsta_list)}", True, yellow)
-      screen.blit(text, [450, 10])
-
       if score == bll:
         doNext("Congratulations, you won!",145,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
-      
-      # Pac-man vaccinates a ghost
-      monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, True)
 
-      if (len(monsta_list) > 128):
-        doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)      
+      monsta_hit_list = pygame.sprite.spritecollide(Pacman, monsta_list, False)
+
+      if monsta_hit_list:
+        doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
 
       # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
       
       pygame.display.flip()
-
+    
       clock.tick(10)
-
-      #Game is 10 FPS according to clock.tick(). Each frame is thus a 0.1 second elapse.
-      for ghost in monsta_list:
-        ghost.incrementTime(0.1)
-        if (ghost.spawn_time > 5):
-          ghost.spawn_time = 0
-          NewGhost = Ghost( w, m_h, "images/corona.png" , "Pinky" )
-
-          if ghost.name == "Pinky":
-            NewGhost = Ghost( w, m_h, "images/corona.png" , "Pinky" )
-          elif ghost.name == "Blinky":
-            NewGhost = Ghost( w, b_h, "images/corona.png" , "Blinky" )
-          elif ghost.name == "Inky":
-            NewGhost = Ghost( i_w, m_h, "images/corona.png" , "Inky" )
-          elif ghost.name == "Clyde":
-            NewGhost = Ghost( c_w, m_h, "images/corona.png" , "Clyde" )
-
-          NewGhost.spawn_time = 0
-          monsta_list.add(NewGhost)
-          all_sprites_list.add(NewGhost)
-      
 
 def doNext(message,left,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate):
   while True:
